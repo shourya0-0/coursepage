@@ -1,58 +1,94 @@
 "use client"
 
-import React from 'react'
-import { useEffect } from "react"
-import { X } from "lucide-react"
+import React, { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 
-export function Modal({ isOpen, onClose, title, children, className = "" }) {
-  // Close modal when Escape key is pressed
+export const Modal = ({ isOpen, onClose, title, children, className = "" }) => {
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") {
-        onClose()
+        onClose();
       }
-    }
+    };
 
     if (isOpen) {
-      document.addEventListener("keydown", handleEscape)
-      // Prevent scrolling when modal is open
-      document.body.style.overflow = "hidden"
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener("keydown", handleEscape)
-      // Restore scrolling when modal is closed
-      document.body.style.overflow = "auto"
-    }
-  }, [isOpen, onClose])
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen, onClose]);
 
-  if (!isOpen) return null
-
-  // Close modal when clicking outside the content
-  const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget) {
-      onClose()
-    }
-  }
+  if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 animate-fade-in"
-      onClick={handleBackdropClick}
-    >
-      <div
-        className={`bg-white rounded-lg shadow-lg w-full max-w-md mx-4 animate-scale-in ${className}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-center p-4 border-b border-[#d8d8d8]">
-          <h3 className="text-lg font-semibold text-[#232636]">{title}</h3>
-          <button onClick={onClose} className="text-[#676767] hover:text-[#232636] transition-colors">
-            <X size={20} />
-          </button>
-        </div>
-        <div className="p-4">{children}</div>
-      </div>
-    </div>
-  )
-}
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ 
+              type: "spring",
+              stiffness: 300,
+              damping: 30
+            }}
+            className={`
+              relative w-full max-w-md pointer-events-auto
+              bg-white/10 backdrop-blur-xl
+              border border-white/20
+              shadow-[0_8px_32px_0_rgba(31,38,135,0.37)]
+              rounded-2xl
+              p-6
+              ${className}
+            `}
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.15)',
+            }}
+          >
+            {/* Glass effect overlay */}
+            <motion.div 
+              className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/50 via-white/20 to-transparent opacity-20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.2 }}
+              transition={{ delay: 0.1 }}
+            />
+            
+            {/* Content container */}
+            <div className="relative z-10">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {title}
+                </h2>
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-full transition-colors
+                    hover:bg-black/10 active:bg-black/20
+                    text-gray-700 dark:text-gray-200"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              {/* Modal content with improved spacing */}
+              <div className="space-y-4">
+                {children}
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
