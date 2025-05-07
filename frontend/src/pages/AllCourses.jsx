@@ -25,7 +25,7 @@ const AllCoursesPage = () => {
         students: 32,
         price: 1200,
         originalPrice: 1500,
-        image: "/rectangle-2749.png",
+        image: "/image.png",
         color: "#ffc619",
       },
     ],
