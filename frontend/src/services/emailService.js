@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:9000/api';
+const API_URL = import.meta.env.VITE_BACKEND_URL+'/api';
+
 
 export const sendEmail = async ({ to, subject, message, name, phone }) => {
   try {
