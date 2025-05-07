@@ -9,6 +9,8 @@ import { sendEmail } from "../services/emailService";
 const AllCoursesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -60,6 +62,14 @@ const AllCoursesPage = () => {
       alert('Please enter a valid email address');
       return;
     }
+    if (!name.trim()) {
+      alert('Please enter your name');
+      return;
+    }
+    if (!phone.trim()) {
+      alert('Please enter your phone number');
+      return;
+    }
     
     setShowConfirm(true);
   };
@@ -70,10 +80,14 @@ const AllCoursesPage = () => {
       await sendEmail({
         to: email,
         subject: `Welcome to ${selectedCourse.title}`,
-        message: `Thank you for enrolling in ${selectedCourse.title}. We'll contact you shortly with next steps.`
+        message: `Thank you for enrolling in ${selectedCourse.title}. We'll contact you shortly with next steps.`,
+        name,
+        phone
       });
       setIsModalOpen(false);
       setEmail("");
+      setName("");
+      setPhone("");
       setShowConfirm(false);
       alert('Registration successful! Check your email for confirmation.');
     } catch {
@@ -186,7 +200,7 @@ const AllCoursesPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-6xl font-bold text-[#0a2540] mb-4 bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent"
+              className="text-4xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent"
             >
               Featured Cohorts
             </motion.h1>
@@ -217,14 +231,31 @@ const AllCoursesPage = () => {
         onClose={() => {
           setIsModalOpen(false);
           setEmail("");
+          setName("");
+          setPhone("");
           setShowConfirm(false);
         }}
-        title={showConfirm ? "Confirm Registration" : "Enter Your Email"}
+        title={showConfirm ? "Confirm Registration" : "Enter Your Details"}
         className="bg-white/20 dark:bg-black/20"
       >
         <div className="space-y-6">
           {!showConfirm ? (
             <>
+              <div className="flex flex-col space-y-3">
+                <label htmlFor="name" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  Full Name
+                </label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="bg-white/50 dark:bg-black/10 backdrop-blur-sm border-white/20 dark:border-white/10 
+                    focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30
+                    text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                />
+              </div>
               <div className="flex flex-col space-y-3">
                 <label htmlFor="email" className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   Email Address
@@ -235,6 +266,21 @@ const AllCoursesPage = () => {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="bg-white/50 dark:bg-black/10 backdrop-blur-sm border-white/20 dark:border-white/10 
+                    focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30
+                    text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                />
+              </div>
+              <div className="flex flex-col space-y-3">
+                <label htmlFor="phone" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  Phone Number
+                </label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className="bg-white/50 dark:bg-black/10 backdrop-blur-sm border-white/20 dark:border-white/10 
                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30
                     text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
@@ -260,10 +306,12 @@ const AllCoursesPage = () => {
                 <span className="font-semibold text-blue-600 dark:text-blue-400">
                   {selectedCourse?.title}
                 </span>
-                <br/> with email: <br/>
-                <span className="font-mono bg-white/30 dark:bg-black/30 px-3 py-1 rounded-md mt-2 inline-block">
-                  {email}
-                </span>
+                <br/> with the following details: <br/>
+                <div className="font-mono bg-white/30 dark:bg-black/30 px-3 py-2 rounded-md mt-2 space-y-1 text-sm">
+                  <p>Name: {name}</p>
+                  <p>Email: {email}</p>
+                  <p>Phone: {phone}</p>
+                </div>
               </p>
               <Button 
                 className="w-full bg-blue-600/90 hover:bg-blue-700/90 backdrop-blur-sm text-white 

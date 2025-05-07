@@ -50,7 +50,11 @@ app.get('/', (req, res) => {
 app.post('/api/send-email', async (req, res) => {
     console.log("Attempting to send email...");
     try {
-        const { to, subject, message } = req.body;
+        const { to, subject, message, name, phone } = req.body;
+
+        if (!to || !subject || !message || !name || !phone) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
@@ -63,6 +67,8 @@ app.post('/api/send-email', async (req, res) => {
         
         // Save email record to MongoDB
         await Email.create({
+            name,
+            phone,
             to,
             subject,
             message,
@@ -72,14 +78,6 @@ app.post('/api/send-email', async (req, res) => {
         console.log("Email sent successfully:", info);
         res.status(200).json({ message: 'Email sent successfully' });
     } catch (error) {
-        // Save failed email attempt to MongoDB
-        await Email.create({
-            to: req.body.to,
-            subject: req.body.subject,
-            message: req.body.message,
-            status: 'failed'
-        }).catch(err => console.error('Error saving failed email to DB:', err));
-
         console.error('Error sending email:', error);
         res.status(500).json({ error: 'Failed to send email', details: error.message });
     }
