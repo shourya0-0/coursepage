@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Modal } from "../components/ui/modal";
@@ -7,6 +8,7 @@ import { Users, ArrowRight, Mail } from "lucide-react";
 import { sendEmail } from "../services/emailService";
 
 const AllCoursesPage = () => {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -74,7 +76,7 @@ const AllCoursesPage = () => {
     setShowConfirm(true);
   };
 
-  const handleConfirmRegistration = async () => {
+  const handleConfirmRegistration = async (setIsSubmitted) => {
     try {
       setLoading(true);
       await sendEmail({
@@ -84,12 +86,36 @@ const AllCoursesPage = () => {
         name,
         phone
       });
+      
+      // Close modal and reset form
       setIsModalOpen(false);
+      
+      // Store user details for the payment page
+      const userDetails = {
+        name,
+        email,
+        phone
+      };
+      
+      // Reset form fields
       setEmail("");
       setName("");
       setPhone("");
       setShowConfirm(false);
-      alert('Registration successful! Check your email for confirmation.');
+      
+      // Use setIsSubmitted function if provided (for backward compatibility)
+      if (setIsSubmitted) {
+        setIsSubmitted(true);
+      }
+      
+      // Redirect to payment page with course and user details
+      navigate('/payment', { 
+        state: { 
+          courseDetails: selectedCourse,
+          userDetails: userDetails
+        }
+      });
+      
     } catch {
       alert('Failed to send confirmation email. Please try again.');
     } finally {
@@ -237,91 +263,77 @@ const AllCoursesPage = () => {
         }}
         title={showConfirm ? "Confirm Registration" : "Enter Your Details"}
         className="bg-white/20 dark:bg-black/20"
+        workshopData={{
+          workshopTitle: selectedCourse?.title || "Workshop Registration",
+          expertName: selectedCourse?.instructor || "Expert Instructors",
+          expertDetails: "Learn from industry professionals",
+          date: selectedCourse?.date || "Coming Soon",
+          time: "Scheduled Sessions",
+          venue: "Online & Live"
+        }}
       >
-        <div className="space-y-6">
-          {!showConfirm ? (
-            <>
-              <div className="flex flex-col space-y-3">
-                <label htmlFor="name" className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  Full Name
-                </label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="bg-white/50 dark:bg-black/10 backdrop-blur-sm border-white/20 dark:border-white/10 
-                    focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30
-                    text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-                />
-              </div>
-              <div className="flex flex-col space-y-3">
-                <label htmlFor="email" className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  Email Address
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-white/50 dark:bg-black/10 backdrop-blur-sm border-white/20 dark:border-white/10 
-                    focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30
-                    text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-                />
-              </div>
-              <div className="flex flex-col space-y-3">
-                <label htmlFor="phone" className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  Phone Number
-                </label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="Enter your phone number"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="bg-white/50 dark:bg-black/10 backdrop-blur-sm border-white/20 dark:border-white/10 
-                    focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30
-                    text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-                />
-              </div>
+        {!showConfirm ? (
+          <div className="space-y-4">
+            <Input
+              id="name"
+              type="text"
+              label="Full Name"
+              placeholder="Enter your full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <Input
+              id="email"
+              type="email"
+              label="Email Address"
+              placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              id="phone"
+              type="tel"
+              label="Phone Number"
+              placeholder="Enter your phone number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <div className="mt-6">
               <Button 
-                className="w-full bg-blue-600/90 hover:bg-blue-700/90 backdrop-blur-sm text-white 
-                  py-2.5 rounded-lg flex items-center justify-center gap-2 
-                  shadow-lg shadow-blue-500/20
-                  transition-all duration-200 ease-out
-                  hover:shadow-xl hover:shadow-blue-500/30
-                  active:scale-[0.98]"
+                variant="primary"
+                fullWidth
                 onClick={handleEmailSubmit}
+                className="mt-2"
               >
-                <Mail className="w-4 h-4" />
-                <span>Continue</span>
+                <Mail className="w-4 h-4 mr-2" />
+                Continue
               </Button>
-            </>
-          ) : (
-            <>
-              <p className="text-gray-800 dark:text-gray-200 text-center px-4">
-                Confirm your registration for <br/>
-                <span className="font-semibold text-blue-600 dark:text-blue-400">
-                  {selectedCourse?.title}
-                </span>
-                <br/> with the following details: <br/>
-                <div className="font-mono bg-white/30 dark:bg-black/30 px-3 py-2 rounded-md mt-2 space-y-1 text-sm">
-                  <p>Name: {name}</p>
-                  <p>Email: {email}</p>
-                  <p>Phone: {phone}</p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <h3 className="font-semibold text-indigo-800 mb-3">Registration Details</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Name:</span>
+                  <span className="font-medium">{name}</span>
                 </div>
-              </p>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Email:</span>
+                  <span className="font-medium">{email}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Phone:</span>
+                  <span className="font-medium">{phone}</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4">
               <Button 
-                className="w-full bg-blue-600/90 hover:bg-blue-700/90 backdrop-blur-sm text-white 
-                  py-2.5 rounded-lg flex items-center justify-center gap-2
-                  shadow-lg shadow-blue-500/20
-                  transition-all duration-200 ease-out
-                  hover:shadow-xl hover:shadow-blue-500/30
-                  active:scale-[0.98]
-                  disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
-                onClick={handleConfirmRegistration}
+                variant="success"
+                fullWidth
+                onClick={({ setIsSubmitted }) => handleConfirmRegistration(setIsSubmitted)}
                 disabled={loading}
               >
                 {loading ? (
@@ -333,12 +345,12 @@ const AllCoursesPage = () => {
                     <span>Processing...</span>
                   </span>
                 ) : (
-                  "Confirm Registration"
+                  "Complete Registration"
                 )}
               </Button>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );
