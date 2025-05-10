@@ -28,7 +28,6 @@ const AllCoursesPage = () => {
         originalPrice: 98, // Changed to make it exactly 50% off
         image: "/image.png",
         color: "#f8f9ff", // Slightly improved background color
-        students: 20,
       },
     ],
   };
@@ -156,10 +155,10 @@ const AllCoursesPage = () => {
           </div>
           
           <div className="flex flex-wrap gap-2 mb-4">
-            <div className="flex items-center text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full w-fit">
+            {/* <div className="flex items-center text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full w-fit">
               <Users className="w-4 h-4 mr-1 text-blue-500" />
               <span>{course.students || "20"} students</span>
-            </div>
+            </div> */}
             
             <div className="flex items-center text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full w-fit">
               <span className="text-blue-500 mr-1">•</span>

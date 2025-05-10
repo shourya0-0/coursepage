@@ -122,22 +122,22 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
             </div>
             
             {/* Two column layout */}
-            <div className="flex flex-col md:flex-row min-h-[550px]">
+            <div className="flex flex-col md:flex-row min-h-[350px]">
               {/* Left column - Registration form */}
-              <div className="w-full md:w-1/2 p-10 bg-white border-r border-gray-100">
+              <div className="w-full md:w-1/2 p-6 bg-white border-r border-gray-100">
                 {/* Centered logo above heading */}
-                <div className="flex justify-center mb-6">
-                  <img src="/logo.svg" alt="Logo" className="h-24" />
+                <div className="flex justify-center mb-4">
+                  <img src="/logo.svg" alt="Logo" className="h-16" />
                 </div>
                 
                 {!isSubmitted ? (
                   <>
-                    <h2 className="text-2xl font-bold text-indigo-900 mb-8 text-center">
+                    <h2 className="text-xl font-bold text-indigo-900 mb-4 text-center">
                       Reserve Your Spot
                     </h2>
                     
                     {/* Form content - Left aligned labels */}
-                    <div className="space-y-6 bg-white p-6 rounded-xl shadow-sm">
+                    <div className="space-y-3 bg-white p-4 rounded-xl shadow-sm">
                       {/* Apply left alignment to form children */}
                       <div className="text-left">
                         {childrenWithProps}
@@ -149,24 +149,24 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
                     </div>
                   </>
                 ) : (
-                  <div className="h-full flex flex-col items-center justify-center text-center space-y-6">
-                    <div className="rounded-full bg-green-50 p-3 w-24 h-24 flex items-center justify-center">
-                      <CheckCircle className="h-16 w-16 text-green-500" />
+                  <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
+                    <div className="rounded-full bg-green-50 p-2 w-20 h-20 flex items-center justify-center">
+                      <CheckCircle className="h-12 w-12 text-green-500" />
                     </div>
-                    <h2 className="text-2xl font-bold text-green-700">Registration Successful!</h2>
+                    <h2 className="text-xl font-bold text-green-700">Registration Successful!</h2>
                     <p className="text-gray-700 max-w-xs">
                       Thank you for registering for this workshop. You'll receive a confirmation email with all the details.
                     </p>
                     <div className="flex space-x-4">
                       <button 
                         onClick={handleBack}
-                        className="mt-4 px-8 py-3 bg-white border border-indigo-600 text-indigo-600 rounded-lg font-medium hover:bg-indigo-50 transition-colors"
+                        className="mt-2 px-6 py-2 bg-white border border-indigo-600 text-indigo-600 rounded-lg font-medium hover:bg-indigo-50 transition-colors text-sm"
                       >
                         Back to Form
                       </button>
                       <button 
                         onClick={onClose}
-                        className="mt-4 px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                        className="mt-2 px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors text-sm"
                       >
                         Close
                       </button>
@@ -176,10 +176,10 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
               </div>
               
               {/* Right column - Workshop details */}
-              <div className="w-full md:w-1/2 p-10 bg-white">
-                <div className="space-y-6">
+              <div className="w-full md:w-1/2 p-6 bg-white">
+                <div className="space-y-4">
                   {/* A) Workshop heading */}
-                  <h2 className="text-2xl font-bold text-indigo-900 mt-4">
+                  <h2 className="text-xl font-bold text-indigo-900 mt-2">
                     {workshopTitle}
                   </h2>
                   
@@ -195,9 +195,9 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
                   </div> */}
                   
                   {/* C) What you'll learn */}
-                  <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="font-semibold text-indigo-900 mb-3 text-left">🚀 What You'll Learn</h3>
-                    <ul className="space-y-3 text-gray-700 text-left">
+                  <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                    <h3 className="font-semibold text-indigo-900 mb-2 text-left">🚀 What You'll Learn</h3>
+                    <ul className="space-y-2 text-gray-700 text-left text-sm">
                       <li className="flex items-start">
                         <span className="text-indigo-500 mr-2">•</span>
                         <span>How to land interview calls using simple, proven resume hacks</span>
@@ -218,8 +218,8 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
                   </div>
                   
                   {/* D) Date, time and venue */}
-                  <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 space-y-3">
-                    <h3 className="font-semibold text-indigo-900 mb-2 text-left">Workshop Details</h3>
+                  <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 space-y-2">
+                    <h3 className="font-semibold text-indigo-900 mb-1 text-left">Workshop Details</h3>
                     <div className="flex items-center text-gray-700">
                       <Calendar className="w-5 h-5 mr-3 text-indigo-500" /> 
                       <span>{date}</span>
@@ -234,12 +234,12 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
                     </div>
                     <div className="flex items-center text-gray-700 mt-2 font-semibold">
                       <span className="text-indigo-600">Fee: </span>
-                      <span className="ml-2">$49</span>
+                      <span className="ml-2">₹49</span>
                     </div>
                   </div>
                   
                   {/* Google Meet statement */}
-                  <div className="p-4 bg-white border border-indigo-100 rounded-xl text-sm text-indigo-700">
+                  <div className="p-3 bg-white border border-indigo-100 rounded-xl text-xs text-indigo-700">
                     <p className="font-medium">Virtual Workshop</p>
                     <p>This workshop will be conducted via Google Meet. Login details will be shared after registration.</p>
                   </div>
