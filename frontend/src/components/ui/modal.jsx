@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 /* eslint-enable */
 import { X, Calendar, MapPin, Clock, CheckCircle, ArrowLeft } from 'lucide-react';
+import './modal.css';
 
 export const Modal = ({ isOpen, onClose, title, children, className = "", workshopData = {} }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -73,7 +74,7 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
     <AnimatePresence>
       {isOpen && (
         <motion.div 
-          className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-4 bg-black/40"
+          className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-4 bg-black/40 modal-wrapper"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -93,6 +94,7 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
               shadow-2xl
               rounded-2xl
               overflow-hidden
+              modal-container
               ${className}
             `}
           >
@@ -122,9 +124,9 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
             </div>
             
             {/* Two column layout */}
-            <div className="flex flex-col md:flex-row min-h-[350px]">
+            <div className="flex flex-col md:flex-row min-h-[350px] modal-content">
               {/* Left column - Registration form */}
-              <div className="w-full md:w-1/2 p-6 bg-white border-r border-gray-100">
+              <div className="w-full md:w-1/2 p-6 bg-white border-r border-gray-100 modal-column">
                 {/* Centered logo above heading */}
                 <div className="flex justify-center mb-4">
                   <img src="/logo.svg" alt="Logo" className="h-16" />
@@ -176,7 +178,7 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
               </div>
               
               {/* Right column - Workshop details */}
-              <div className="w-full md:w-1/2 p-6 bg-white">
+              <div className="w-full md:w-1/2 p-6 bg-white modal-column">
                 <div className="space-y-4">
                   {/* A) Workshop heading */}
                   <h2 className="text-xl font-bold text-indigo-900 mt-2">
