@@ -50,9 +50,9 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
   if (!isOpen) return null;
 
   const {
-    workshopTitle = title || "Workshop Title",
-    expertName = "Expert Name",
-    expertDetails = "Expert details and qualifications",
+    workshopTitle = title || "Craft a Resume That Says 'Hire Me' Without Saying a Word",
+    expertName = "Indieguru",
+    expertDetails = "Career coach specializing in resume optimization and job search strategies",
     date = "May 10, 2025",
     time = "10:00 AM - 12:00 PM",
     venue = "Online"
@@ -127,7 +127,7 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
               <div className="w-full md:w-1/2 p-10 bg-white border-r border-gray-100">
                 {/* Centered logo above heading */}
                 <div className="flex justify-center mb-6">
-                  <img src="/logo.png" alt="Logo" className="h-24" />
+                  <img src="/logo.svg" alt="Logo" className="h-24" />
                 </div>
                 
                 {!isSubmitted ? (
@@ -184,35 +184,35 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
                   </h2>
                   
                   {/* B) Expert details */}
-                  <div className="flex items-start space-x-4">
-                    <div className="h-14 w-14 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-lg font-semibold">
-                      {expertName.charAt(0)}
+                  {/* <div className="flex items-start space-x-4">
+                    <div className="h-14 w-14 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden">
+                      <img src="/logo.svg" alt="Indiegury Logo" className="h-8 w-8" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">{expertName}</h3>
                       <p className="text-sm text-gray-600">{expertDetails}</p>
                     </div>
-                  </div>
+                  </div> */}
                   
                   {/* C) What you'll learn */}
                   <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="font-semibold text-indigo-900 mb-3 text-left">What you'll learn</h3>
-                    <ul className="space-y-3 text-gray-700">
+                    <h3 className="font-semibold text-indigo-900 mb-3 text-left">🚀 What You'll Learn</h3>
+                    <ul className="space-y-3 text-gray-700 text-left">
                       <li className="flex items-start">
                         <span className="text-indigo-500 mr-2">•</span>
-                        <span>Learning point 1</span>
+                        <span>How to land interview calls using simple, proven resume hacks</span>
                       </li>
                       <li className="flex items-start">
                         <span className="text-indigo-500 mr-2">•</span>
-                        <span>Learning point 2</span>
+                        <span>Ways to make your resume match job roles — without faking anything</span>
                       </li>
                       <li className="flex items-start">
                         <span className="text-indigo-500 mr-2">•</span>
-                        <span>Learning point 3</span>
+                        <span>What recruiters actually look for (and how to highlight it in 5 lines or less)</span>
                       </li>
                       <li className="flex items-start">
                         <span className="text-indigo-500 mr-2">•</span>
-                        <span>Learning point 4</span>
+                        <span>How to turn "no experience" into strong, relevant resume content</span>
                       </li>
                     </ul>
                   </div>
@@ -231,6 +231,10 @@ export const Modal = ({ isOpen, onClose, title, children, className = "", worksh
                     <div className="flex items-center text-gray-700">
                       <MapPin className="w-5 h-5 mr-3 text-indigo-500" /> 
                       <span>{venue}</span>
+                    </div>
+                    <div className="flex items-center text-gray-700 mt-2 font-semibold">
+                      <span className="text-indigo-600">Fee: </span>
+                      <span className="ml-2">$49</span>
                     </div>
                   </div>
                   
