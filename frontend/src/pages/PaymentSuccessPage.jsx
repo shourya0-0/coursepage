@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { CheckCircle } from "lucide-react";
@@ -7,6 +7,12 @@ const PaymentSuccessPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { courseDetails } = location.state || {};
+
+  useEffect(()=>{
+    // fetch from db
+    // payment - sucess
+    //send mail
+  })
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-16 px-4 sm:px-6 lg:px-8">

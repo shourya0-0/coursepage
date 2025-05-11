@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Modal } from "../components/ui/modal";
-import { Users, ArrowRight, Mail } from "lucide-react";
+import { Users, ArrowRight, Mail, Code, PersonStanding } from "lucide-react";
 import { sendEmail } from "../services/emailService";
 
 const AllCoursesPage = () => {
@@ -75,52 +75,39 @@ const AllCoursesPage = () => {
     setShowConfirm(true);
   };
 
-  const handleConfirmRegistration = async (setIsSubmitted) => {
-    try {
-      setLoading(true);
-      await sendEmail({
-        to: email,
-        subject: `Welcome to ${selectedCourse.title}`,
-        message: `Thank you for enrolling in ${selectedCourse.title}. We'll contact you shortly with next steps.`,
-        name,
-        phone
-      });
-      
-      // Close modal and reset form
-      setIsModalOpen(false);
-      
-      // Store user details for the payment page
-      const userDetails = {
-        name,
-        email,
-        phone
-      };
-      
-      // Reset form fields
-      setEmail("");
-      setName("");
-      setPhone("");
-      setShowConfirm(false);
-      
-      // Use setIsSubmitted function if provided (for backward compatibility)
-      if (setIsSubmitted) {
-        setIsSubmitted(true);
-      }
-      
-      // Redirect to payment page with course and user details
-      navigate('/payment', { 
-        state: { 
-          courseDetails: selectedCourse,
-          userDetails: userDetails
-        }
-      });
-      
-    } catch {
-      alert('Failed to send confirmation email. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
+  // SEE HERE FOR CHANGES
+  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
+
+  // -- SEND THE MAIL AFTER THE CALLBACK IS INITIATED ---
+  // SAVE THE DETAILS IN 
+  const handleConfirmRegistration = () => {
+    // ADD THE DETAILS IN DB
+    // FETCH THE DETAILS FORM DB WHEN PAYMENT IS SUCCESSED ( CALLBACK ) IN USEEFFECT AND AFTER THAT SEND THE MAIL
+    // DB INCLUDE (EMAIL NAME PHONE PAYMENT STATUS (MAKE AN ENUM))
+
+    // DB Code
+    //  - Payment_status = Pending
+    
+    //CHECK PAYMENT SUCCESS PAGE
+  if (!email || !name || !phone) {
+    alert("Please fill in all required details.");
+    return;
+  }
+
+  window.location.href = 'https://rzp.io/rzp/bDNGTXB';
+};
+
+  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
 
   const CourseCard = ({ course }) => {
     const discountPercentage = 50; // Fixed at 50% discount
