@@ -10,7 +10,7 @@ const TempPaymentPage = () => {
 
   const handleCompletePayment = () => {
     // Simulate successful payment and redirect
-    navigate('/payment-success', { 
+    navigate('/payment-status', { 
       state: { 
         courseDetails,
         userDetails

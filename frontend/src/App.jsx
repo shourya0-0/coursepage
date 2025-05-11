@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<AllCourses />} />
         <Route path="/payment" element={<TempPaymentPage />} />
-        <Route path="/payment-success" element={<PaymentSuccessPage />} />
+        <Route path="/payment-status" element={<PaymentSuccessPage />} />
       </Routes>
     </Router>
   )
