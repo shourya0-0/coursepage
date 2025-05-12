@@ -52,23 +52,43 @@ app.post('/api/send-email', async (req, res) => {
     try {
         const { to, subject, message, name, phone } = req.body;
 
-        if (!to || !subject || !message || !name || !phone) {
+        if (!to || !subject ||!name ||!phone) {
             return res.status(400).json({ error: 'All fields are required' });
         }
 
+        const webinarDetails = {
+            time: "3:00 PM", // Hardcoded time
+            date: "May 15, 2025", // Hardcoded date
+            link: "https://zoom.us/j/123456789" // Hardcoded link
+        };
+
+        console.log('working fine')
         const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: to,
-            subject: subject,
-            text: message
+        from: process.env.EMAIL_USER,
+        to: to,
+        subject: subject,
+        message: `Thanks for registering for our webinar!\nDate: ${webinarDetails.date}\nTime: ${webinarDetails.time}\nJoin Link: ${webinarDetails.link}`,
+        html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px;">
+            <h2 style="color: #2c3e50;">Thanks for Registering!</h2>
+            <p>Hello ${name},</p>
+            <p>You are confirmed for our upcoming webinar.</p>
+            <ul>
+                <li><strong>Date:</strong> ${webinarDetails.date}</li>
+                <li><strong>Time:</strong> ${webinarDetails.time}</li>
+                <li><strong>Join Link:</strong> <a href="${webinarDetails.link}">${webinarDetails.link}</a></li>
+            </ul>
+            <p>IndieGuru Team</p>
+            </div>
+        `
         };
 
         const info = await transporter.sendMail(mailOptions);
-        
+
         // Save email record to MongoDB
         await Email.create({
             name,
-            phone,
+            phone, // You can extract phone from the body if it's passed
             to,
             subject,
             message,
@@ -82,6 +102,7 @@ app.post('/api/send-email', async (req, res) => {
         res.status(500).json({ error: 'Failed to send email', details: error.message });
     }
 });
+
 
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_BACKEND_URL+'/api';
 
 
-export const sendEmail = async ({ to, subject, message, name, phone }) => {
+export const sendEmail = async ({ to, subject, message,name, phone }) => {
   try {
     const response = await fetch(`${API_URL}/send-email`, {
       method: 'POST',
@@ -11,9 +11,9 @@ export const sendEmail = async ({ to, subject, message, name, phone }) => {
       body: JSON.stringify({
         to,
         subject,
-        message,
         name,
-        phone
+        message,
+        phone,
       }),
     });
 
