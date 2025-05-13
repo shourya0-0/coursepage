@@ -215,7 +215,7 @@ const AllCoursesPage = () => {
         <div className="w-full flex flex-col sm:flex-row items-center justify-between mb-12">
           <div className="w-full mb-4 sm:mb-0 text-center sm:text-left">
             <div className="inline-block mb-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
-              New cohorts starting on 15 May 2025
+              New cohorts starting on 18 May 2025
             </div>
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
