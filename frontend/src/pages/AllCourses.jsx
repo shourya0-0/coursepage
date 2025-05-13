@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
@@ -9,7 +9,7 @@ import { registerUser } from "../services/emailService";
 
 const AllCoursesPage = () => {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(true); // Changed to true
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -31,6 +31,13 @@ const AllCoursesPage = () => {
       },
     ],
   };
+
+  // Set the initial selected course when component mounts
+  useEffect(() => {
+    if (contentData.cohorts && contentData.cohorts.length > 0) {
+      setSelectedCourse(contentData.cohorts[0]);
+    }
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
