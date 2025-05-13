@@ -1,21 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+import { registerUser } from "../services/emailService";
 
 const TempPaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { courseDetails, userDetails } = location.state || {};
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleCompletePayment = () => {
-    // Simulate successful payment and redirect
-    navigate('/payment-status', { 
-      state: { 
-        courseDetails,
-        userDetails
-      }
-    });
+  const handleCompletePayment = async () => {
+    try {
+      setIsProcessing(true);
+      
+      // First register the user
+      const registrationResult = await registerUser({
+        name: userDetails?.name,
+        email: userDetails?.email,
+        phone: userDetails?.phone
+      });
+
+      // Simulate successful payment and redirect with registration ID
+      navigate('/payment-status', { 
+        state: { 
+          courseDetails,
+          userDetails,
+          registrationId: registrationResult.registration.registrationId
+        }
+      });
+    } catch (error) {
+      console.error('Registration failed:', error);
+      alert('Failed to process registration. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (!courseDetails) {
@@ -85,9 +104,10 @@ const TempPaymentPage = () => {
             
             <Button 
               onClick={handleCompletePayment}
+              disabled={isProcessing}
               className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3"
             >
-              Complete Payment
+              {isProcessing ? 'Processing...' : 'Complete Payment'}
             </Button>
             
             <p className="text-sm text-gray-500 text-center">

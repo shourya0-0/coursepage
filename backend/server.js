@@ -46,63 +46,104 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-// Email route
-app.post('/api/send-email', async (req, res) => {
-    console.log("Attempting to send email...");
+// Registration route
+app.post('/api/register', async (req, res) => {
     try {
-        const { to, subject, message, name, phone } = req.body;
+        const { name, email, phone } = req.body;
 
-        if (!to || !subject ||!name ||!phone) {
-            return res.status(400).json({ error: 'All fields are required' });
+        if (!name || !email || !phone) {
+            return res.status(400).json({ error: 'Name, email and phone are required' });
         }
 
-        const webinarDetails = {
-            time: "3:00 PM", // Hardcoded time
-            date: "May 15, 2025", // Hardcoded date
-            link: "https://zoom.us/j/123456789" // Hardcoded link
-        };
+        // Generate a unique registration ID
+        const registrationId = new mongoose.Types.ObjectId().toString();
 
-        console.log('working fine')
-        const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: to,
-        subject: subject,
-        message: `Thanks for registering for our webinar!\nDate: ${webinarDetails.date}\nTime: ${webinarDetails.time}\nJoin Link: ${webinarDetails.link}`,
-        html: `
-            <div style="font-family: Arial, sans-serif; padding: 20px;">
-            <h2 style="color: #2c3e50;">Thanks for Registering!</h2>
-            <p>Hello ${name},</p>
-            <p>You are confirmed for our upcoming webinar.</p>
-            <ul>
-                <li><strong>Date:</strong> ${webinarDetails.date}</li>
-                <li><strong>Time:</strong> ${webinarDetails.time}</li>
-                <li><strong>Join Link:</strong> <a href="${webinarDetails.link}">${webinarDetails.link}</a></li>
-            </ul>
-            <p>IndieGuru Team</p>
-            </div>
-        `
-        };
-
-        const info = await transporter.sendMail(mailOptions);
-
-        // Save email record to MongoDB
-        await Email.create({
+        // Create user registration in database without sending email
+        const newRegistration = await Email.create({
             name,
-            phone, // You can extract phone from the body if it's passed
-            to,
-            subject,
-            message,
-            status: 'success'
+            phone,
+            to: email,
+            subject: 'Registration Confirmation',
+            message: 'Thank you for registering',
+            registrationId,
+            paymentStatus: 'pending'
+        });
+        
+        res.status(201).json({ 
+            message: 'Registration successful', 
+            registration: newRegistration 
         });
 
-        console.log("Email sent successfully:", info);
-        res.status(200).json({ message: 'Email sent successfully' });
     } catch (error) {
-        console.error('Error sending email:', error);
-        res.status(500).json({ error: 'Failed to send email', details: error.message });
+        console.error('Registration error:', error);
+        res.status(500).json({ 
+            error: 'Failed to register', 
+            details: error.message 
+        });
     }
 });
 
+// Payment success route
+app.post('/api/payment-success', async (req, res) => {
+    try {
+        const { registrationId } = req.body;
+
+        if (!registrationId) {
+            return res.status(400).json({ error: 'Registration ID is required' });
+        }
+
+        // Find and update the registration using registrationId field
+        const registration = await Email.findOne({ registrationId });
+        
+        if (!registration) {
+            return res.status(404).json({ error: 'Registration not found' });
+        }
+
+        // Update payment status
+        registration.paymentStatus = 'completed';
+        await registration.save();
+
+        // Now send the confirmation email
+        const webinarDetails = {
+            time: "3:00 PM",
+            date: "May 15, 2025",
+            link: "https://zoom.us/j/123456789"
+        };
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: registration.to,
+            subject: registration.subject,
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                <h2 style="color: #2c3e50;">Thanks for Registering!</h2>
+                <p>Hello ${registration.name},</p>
+                <p>Your payment has been confirmed and you are now registered for our upcoming webinar.</p>
+                <ul>
+                    <li><strong>Date:</strong> ${webinarDetails.date}</li>
+                    <li><strong>Time:</strong> ${webinarDetails.time}</li>
+                    <li><strong>Join Link:</strong> <a href="${webinarDetails.link}">${webinarDetails.link}</a></li>
+                </ul>
+                <p>IndieGuru Team</p>
+                </div>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        res.status(200).json({ 
+            message: 'Payment confirmed and confirmation email sent',
+            registration: registration
+        });
+
+    } catch (error) {
+        console.error('Payment success handling error:', error);
+        res.status(500).json({ 
+            error: 'Failed to process payment success', 
+            details: error.message 
+        });
+    }
+});
 
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

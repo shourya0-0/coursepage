@@ -1,56 +1,43 @@
-import React, { useRef,useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { CheckCircle } from "lucide-react";
-import { sendEmail } from "../services/emailService";
+import { confirmPaymentSuccess } from "../services/emailService";
 
 const PaymentSuccessPage = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-
-  // REMOVE THESE HARDCORDING ACCORDING TO YOUR LOGIC
-  const [name, setName] = useState("Aditya Narang");
-  const [email, setEmail] = useState("narang.adi01@gmail.com");
-  const [phone,setPhone] = useState("9399056819");
-  // REMOVE THESE HARDCORDING ACCORDING TO YOUR LOGIC
-  //const { courseDetails } = location.state || {};
-  const hasSent = useRef(false); // persists between renders
+  const hasSent = useRef(false);
   
   const courseDetails = {
-  title: "Full Stack Web Development",
-  date: "2025-06-01",
-  price: "199"
+    title: "Full Stack Web Development",
+    date: "2025-06-01",
+    price: "199"
   };
 
   useEffect(() => {
-    const sendConfirmation = async () => {
+    const confirmPayment = async () => {
       if (hasSent.current) return;
       hasSent.current = true;
 
       try {
-        console.log("Triggered");
-        if (!email || !name || !phone) {
-          console.error("Missing required fields", { email, name, selectedCourse });
-          alert("Please fill in all required details.");
+        // Get registrationId from sessionStorage
+        const registrationId = sessionStorage.getItem('registrationId');
+        if (!registrationId) {
+          console.error("Missing registration ID");
           return;
         }
 
-        await sendEmail({
-          to: email,
-          subject: `IndieGuru Webinar Confirmations`,
-          message: 'Mail sent successfully',
-          name,
-          phone,
-        });
+        await confirmPaymentSuccess(registrationId);
+        // Clear the registration ID from session storage after successful confirmation
+        sessionStorage.removeItem('registrationId');
       } catch (error) {
-        console.error("Email sending failed:", error);
-        alert("Failed to send confirmation email. Please contact the admin.");
+        console.error("Payment confirmation failed:", error);
+        alert("Failed to confirm payment. Please contact support.");
       }
     };
 
-    sendConfirmation();
+    confirmPayment();
   }, []);
-
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-16 px-4 sm:px-6 lg:px-8">

@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Modal } from "../components/ui/modal";
 import { Users, ArrowRight, Mail, Code, PersonStanding } from "lucide-react";
-import { sendEmail } from "../services/emailService";
+import { registerUser } from "../services/emailService";
 
 const AllCoursesPage = () => {
   const navigate = useNavigate();
@@ -75,15 +75,34 @@ const AllCoursesPage = () => {
     setShowConfirm(true);
   };
 
-  const handleConfirmRegistration = () => {
-  if (!email || !name || !phone) {
-    alert("Please fill in all required details.");
-    return;
-  }
+  const handleConfirmRegistration = async () => {
+    try {
+      setLoading(true);
+      
+      // Register the user
+      const registrationResult = await registerUser({
+        name,
+        email,
+        phone
+      });
 
-  window.location.href = 'https://rzp.io/rzp/bDNGTXB';
-};
-
+      // Store registration ID in session storage for later use
+      sessionStorage.setItem('registrationId', registrationResult.registration.registrationId);
+      
+      // Redirect to Razorpay
+      window.location.href = 'https://rzp.io/rzp/bDNGTXB';
+      
+      setIsModalOpen(false);
+      if (setIsSubmitted) {
+        setIsSubmitted(true);
+      }
+    } catch (error) {
+      console.error('Registration failed:', error);
+      alert('Failed to register. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const CourseCard = ({ course }) => {
     const discountPercentage = 50; // Fixed at 50% discount
@@ -322,7 +341,7 @@ const AllCoursesPage = () => {
               <Button 
                 variant="success"
                 fullWidth
-                onClick={({ setIsSubmitted }) => handleConfirmRegistration(setIsSubmitted)}
+                onClick={() => handleConfirmRegistration()}
                 disabled={loading}
                 className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white py-2 rounded-lg transition-all duration-300 text-sm"
               >
