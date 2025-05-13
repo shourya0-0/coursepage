@@ -101,7 +101,7 @@ const PaymentSuccessPage = () => {
           <Button 
             variant="outline"
             className="border-gray-300 text-gray-700 hover:bg-gray-50"
-            onClick={() => window.open('mailto:support@indieguru.com')}
+            onClick={() => window.open('mailto:team@myindieguru.com')}
           >
             Contact Support
           </Button>
