@@ -105,26 +105,35 @@ app.post('/api/payment-success', async (req, res) => {
 
         // Now send the confirmation email
         const webinarDetails = {
-            time: "3:00 PM",
-            date: "May 15, 2025",
-            link: "https://zoom.us/j/123456789"
+            time: "4:00 - 5:00 PM",
+            date: "18th May 2025",
+            link: "https://meet.google.com/rdn-bfjt-kri",
+            supportContact: "8006335334",
+            supportPerson: "Vardan Dhall"
         };
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: registration.to,
-            subject: registration.subject,
+            subject: "Welcome to IndieGuru's Resume Building Masterclass!",
             html: `
-                <div style="font-family: Arial, sans-serif; padding: 20px;">
-                <h2 style="color: #2c3e50;">Thanks for Registering!</h2>
-                <p>Hello ${registration.name},</p>
-                <p>Your payment has been confirmed and you are now registered for our upcoming webinar.</p>
-                <ul>
-                    <li><strong>Date:</strong> ${webinarDetails.date}</li>
-                    <li><strong>Time:</strong> ${webinarDetails.time}</li>
-                    <li><strong>Join Link:</strong> <a href="${webinarDetails.link}">${webinarDetails.link}</a></li>
-                </ul>
-                <p>IndieGuru Team</p>
+                <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                    <h2 style="color: #003265; margin-bottom: 20px;">Hey There,</h2>
+                    
+                    <p style="margin-bottom: 20px;">Congratulations on taking the first step towards your job search with IndieGuru! 🚀</p>
+                    
+                    <p style="margin-bottom: 20px;">You're invited to an exclusive Resume Building Masterclass, where you'll learn expert tips to craft a winning resume that could land you your dream job.</p>
+                    
+                    <div style="background-color: #f8f9ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
+                        <p style="margin: 10px 0;"><strong>📅 Time:</strong> ${webinarDetails.time}, ${webinarDetails.date}</p>
+                        <p style="margin: 10px 0;"><strong>🔗 Join here:</strong> <a href="${webinarDetails.link}" style="color: #003265;">${webinarDetails.link}</a></p>
+                    </div>
+                    
+                    <p style="margin: 20px 0;">In case of any queries or concerns, please reach out to - ${webinarDetails.supportContact} (${webinarDetails.supportPerson})</p>
+                    
+                    <p style="margin: 20px 0;">We look forward to seeing you there!</p>
+                    
+                    <p style="margin-top: 30px;">Best Regards,<br>Team IndieGuru</p>
                 </div>
             `
         };

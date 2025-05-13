@@ -98,7 +98,7 @@ const AllCoursesPage = () => {
       }
     } catch (error) {
       console.error('Registration failed:', error);
-      alert('Failed to register. Please try again.');
+      // alert('Failed to register. Please try again.');
     } finally {
       setLoading(false);
     }
