@@ -20,7 +20,7 @@ const PaymentSuccessPage = () => {
       hasSent.current = true;
 
       try {
-        // Get registrationId from sessionStorage
+      
         const registrationId = sessionStorage.getItem('registrationId');
         if (!registrationId) {
           console.error("Missing registration ID");

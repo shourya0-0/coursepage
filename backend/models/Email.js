@@ -21,11 +21,6 @@ const emailSchema = new mongoose.Schema({
         type: String,
         // required: true
     },
-    registrationId: {
-        type: String,
-        required: true,
-        unique: true
-    },
     paymentStatus: {
         type: String,
         enum: ['pending', 'completed', 'failed'],

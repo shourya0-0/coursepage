@@ -13,7 +13,20 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/course
 
 // Connect to MongoDB
 mongoose.connect(MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
+    .then(async () => {
+        console.log('Connected to MongoDB');
+        // Drop the registrationId index if it exists
+        try {
+            const collection = mongoose.connection.collection('emails');
+            await collection.dropIndex('registrationId_1');
+            console.log('Successfully dropped registrationId index');
+        } catch (error) {
+            // Ignore error if index doesn't exist
+            if (!error.message.includes('index not found')) {
+                console.error('Error dropping index:', error);
+            }
+        }
+    })
     .catch(err => console.error('MongoDB connection error:', err));
 
 const corsOptions = {
@@ -55,9 +68,6 @@ app.post('/api/register', async (req, res) => {
             return res.status(400).json({ error: 'Name, email and phone are required' });
         }
 
-        // Generate a unique registration ID
-        const registrationId = new mongoose.Types.ObjectId().toString();
-
         // Create user registration in database without sending email
         const newRegistration = await Email.create({
             name,
@@ -65,20 +75,22 @@ app.post('/api/register', async (req, res) => {
             to: email,
             subject: 'Registration Confirmation',
             message: 'Thank you for registering',
-            registrationId,
             paymentStatus: 'pending'
         });
-        
+
+        console.log('New registration:', newRegistration._id);
         res.status(201).json({ 
             message: 'Registration successful', 
-            registration: newRegistration 
+            registration: {
+                ...newRegistration.toObject(),
+                registrationId: newRegistration._id // Use _id as registrationId for frontend compatibility
+            }
         });
-
     } catch (error) {
         console.error('Registration error:', error);
         res.status(500).json({ 
             error: 'Failed to register', 
-            details: error.message 
+            details: error.message
         });
     }
 });
@@ -92,8 +104,8 @@ app.post('/api/payment-success', async (req, res) => {
             return res.status(400).json({ error: 'Registration ID is required' });
         }
 
-        // Find and update the registration using registrationId field
-        const registration = await Email.findOne({ registrationId });
+        // Find and update the registration using _id instead of registrationId
+        const registration = await Email.findById(registrationId);
         
         if (!registration) {
             return res.status(404).json({ error: 'Registration not found' });
