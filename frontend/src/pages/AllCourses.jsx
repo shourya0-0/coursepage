@@ -23,7 +23,7 @@ const AllCoursesPage = () => {
         id: 1,
         title: "Craft a Resume That Says 'Hire Me' Without Saying a Word",
         instructor: "IndieGuru",
-        date: "15 May - 30 July 2025",
+        date: "4:00 - 5:00 PM, 18th May 2025",
         price: 49,
         originalPrice: 98, // Changed to make it exactly 50% off
         image: "/image.png",
